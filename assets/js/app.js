@@ -82,7 +82,7 @@
   };
   var svgN = 0;
 
-  function flacon(p) {
+  function flacon(p, bare) {
     var s = SHAPES[p.sh] || SHAPES.square, t = TINT[p.f] || '#C9A27A', u = 'fl' + (++svgN);
     var dark = hash(p.id) % 2 === 0, capFill = dark ? '#21150B' : 'url(#' + u + 'm)';
     var ny = s.top - 13, cap;
@@ -93,7 +93,7 @@
       '<defs><clipPath id="' + u + 'c"><path d="' + s.d + '"/></clipPath>' +
       '<linearGradient id="' + u + 'l" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + t + '" stop-opacity=".62"/><stop offset="1" stop-color="' + t + '"/></linearGradient>' +
       '<linearGradient id="' + u + 'm" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8E6238"/><stop offset=".45" stop-color="#E3C49A"/><stop offset="1" stop-color="#9C6E41"/></linearGradient></defs>' +
-      '<circle cx="100" cy="132" r="94" fill="' + t + '" opacity=".14"/>' +
+      (bare ? '' : '<circle cx="100" cy="132" r="94" fill="' + t + '" opacity=".14"/>') +
       '<ellipse cx="100" cy="215" rx="64" ry="5" fill="#21150B" opacity=".12"/>' +
       '<path d="' + s.d + '" fill="#fff" opacity=".6"/>' +
       '<g clip-path="url(#' + u + 'c)"><rect x="0" y="' + (s.top + 20) + '" width="200" height="240" fill="url(#' + u + 'l)"/>' +
@@ -106,13 +106,13 @@
       '</svg>';
   }
 
-  function vial(p, ml) {
+  function vial(p, ml, bare) {
     var t = TINT[p.f] || '#C9A27A', u = 'vl' + (++svgN);
     var h = 56 + Math.sqrt(ml) * 17, w = 26 + Math.sqrt(ml) * 4.2, x = 100 - w / 2, y = 212 - h;
     return '<svg viewBox="0 0 200 240" aria-hidden="true" focusable="false">' +
       '<defs><linearGradient id="' + u + 'l" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + t + '" stop-opacity=".62"/><stop offset="1" stop-color="' + t + '"/></linearGradient>' +
       '<linearGradient id="' + u + 'm" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8E6238"/><stop offset=".45" stop-color="#E3C49A"/><stop offset="1" stop-color="#9C6E41"/></linearGradient></defs>' +
-      '<circle cx="100" cy="132" r="94" fill="' + t + '" opacity=".14"/>' +
+      (bare ? '' : '<circle cx="100" cy="132" r="94" fill="' + t + '" opacity=".14"/>') +
       '<ellipse cx="100" cy="215" rx="' + (w * .8) + '" ry="4" fill="#21150B" opacity=".12"/>' +
       '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="5" fill="#fff" opacity=".6"/>' +
       '<rect x="' + x + '" y="' + (y + h * .18) + '" width="' + w + '" height="' + (h * .82) + '" rx="5" fill="url(#' + u + 'l)"/>' +
@@ -122,6 +122,12 @@
       '<rect x="' + (100 - w * .2) + '" y="' + (y - 30) + '" width="' + (w * .4) + '" height="11" rx="2" fill="#21150B"/>' +
       '</svg>';
   }
+
+  // Почтовый штемпель для строки про доставку
+  var STAMP = '<svg viewBox="0 0 98 48" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor">' +
+    '<circle cx="24" cy="24" r="20" stroke-width="1.4"/><circle cx="24" cy="24" r="13.5" stroke-width="1"/>' +
+    '<path stroke-width="1.3" d="M50 13q4-6 8 0t8 0 8 0 8 0 8 0 8 0M50 24q4-6 8 0t8 0 8 0 8 0 8 0 8 0M50 35q4-6 8 0t8 0 8 0 8 0 8 0 8 0"/></g>' +
+    '<circle cx="24" cy="24" r="3.4" fill="#B18151"/></svg>';
 
   /* ---------- Карточка ---------- */
   function favBtn(p) {
@@ -183,6 +189,11 @@
       return '<a href="#catalog" data-go-brand="' + esc(b.name) + '">' + esc(b.name) + '</a>';
     }).join('<i class="dot"></i>');
 
+    var shelf = ['tom-ford-lost-cherry', 'mfk-baccarat-rouge-540', 'diptyque-philosykos'].map(function (id) { return byId[id] ? flacon(byId[id], true) : ''; }).join('');
+    var vp = byId['pdm-delina'] || PRODUCTS[0];
+    var vials = [2, 10, 50].map(function (ml) { return vial(vp, ml, true); }).join('');
+    var manifestEnd = '<i class="manifest__lead" aria-hidden="true"></i><span class="manifest__end">и точка<i class="dot"></i></span></a>';
+
     return '<section class="hero"><div class="hero__in">' +
       '<div><h1>Оригинальная парфюмерия — флаконом или по&nbsp;миллилитру<i class="dot"></i></h1>' +
       '<p class="lead">Более 30 000 позиций. Распив и пробники от 2 до 50 мл. Оперативная доставка по всей России.</p>' +
@@ -190,10 +201,10 @@
       '<div class="hero__art"><img src="assets/img/logo-mark.jpg" width="800" height="560" alt="Знак «Ароматно и точка»: буква А в виде парфюмерного флакона с золотой крышкой"></div>' +
       '</div></section>' +
 
-      '<section class="facts" aria-label="Коротко о магазине"><div class="facts__in">' +
-      '<div class="fact"><b>30 000+ позиций</b><span>Только оригинальная парфюмерия</span></div>' +
-      '<div class="fact"><b>От 2 до 50 мл</b><span>Распив и пробники любого объёма</span></div>' +
-      '<div class="fact"><b>Вся Россия</b><span>Оперативная доставка в любой город</span></div>' +
+      '<section class="manifest" aria-label="Коротко о магазине"><div class="wrap">' +
+      '<a class="manifest__row" href="#catalog"><span class="manifest__text">Более 30 000 <span class="manifest__pic manifest__pic--shelf">' + shelf + '</span> позиций оригинальной парфюмерии</span>' + manifestEnd +
+      '<a class="manifest__row" href="#decant"><span class="manifest__text">Распив и пробники от 2 <span class="manifest__pic manifest__pic--vials">' + vials + '</span> до 50 мл</span>' + manifestEnd +
+      '<a class="manifest__row" href="#delivery"><span class="manifest__text">Оперативная доставка <span class="manifest__pic manifest__pic--stamp">' + STAMP + '</span> по всей России</span>' + manifestEnd +
       '</div></section>' +
 
       '<section class="section wrap"><div class="section__head"><h2>Сейчас выбирают<i class="dot"></i></h2>' +

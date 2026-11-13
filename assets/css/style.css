@@ -177,7 +177,7 @@ main { min-height: 60vh; padding-bottom: clamp(72px, 10vw, 140px); }
 /* Первый экран */
 .hero { position: relative; overflow: hidden; }
 .hero__in {
-  max-width: var(--wrap); margin: 0 auto; padding: clamp(36px, 6vw, 88px) var(--pad) clamp(40px, 6vw, 80px);
+  max-width: var(--wrap); margin: 0 auto; padding: clamp(36px, 6vw, 88px) var(--pad) clamp(32px, 4.5vw, 60px);
   display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); align-items: center; gap: clamp(16px, 4vw, 64px);
 }
 .hero h1 {
@@ -195,14 +195,29 @@ main { min-height: 60vh; padding-bottom: clamp(72px, 10vw, 140px); }
 }
 @keyframes veil { from { opacity: 0; transform: scale(1.05); } to { opacity: 1; transform: none; } }
 
-/* Три факта */
-.facts { border-top: 1px solid rgba(33, 21, 11, .14); border-bottom: 1px solid rgba(33, 21, 11, .14); }
-.facts__in { max-width: var(--wrap); margin: 0 auto; padding: 0 var(--pad); display: grid; grid-template-columns: repeat(3, 1fr); }
-.fact { padding: clamp(24px, 3.4vw, 44px) clamp(16px, 3vw, 44px); }
-.fact + .fact { border-left: 1px solid rgba(33, 21, 11, .14); }
-.fact:first-child { padding-left: 0; }
-.fact b { display: block; font-family: var(--serif); font-weight: 400; font-size: clamp(1.75rem, 3.2vw, 2.75rem); line-height: 1.05; }
-.fact span { display: block; margin-top: 8px; color: var(--ink-soft); }
+/* Строки-утверждения: «… и точка» */
+.manifest { border-top: 1px solid rgba(33, 21, 11, .14); border-bottom: 1px solid rgba(33, 21, 11, .14); }
+.manifest__row { display: flex; align-items: baseline; gap: clamp(14px, 2vw, 28px); padding: clamp(24px, 3.2vw, 44px) 0; }
+.manifest__row + .manifest__row { border-top: 1px solid rgba(33, 21, 11, .14); }
+.manifest__row:nth-child(2) { padding-left: 5%; }
+.manifest__row:nth-child(3) { padding-left: 10%; }
+.manifest__text {
+  font-family: var(--serif); font-weight: 400; font-size: clamp(1.75rem, 3.2vw, 3rem);
+  line-height: 1.1; letter-spacing: -.012em; text-wrap: balance; transition: color .3s var(--ease);
+}
+.manifest__lead { flex: 1; min-width: 32px; height: 0; border-bottom: 2px dotted rgba(33, 21, 11, .34); transform: translateY(-.28em); transition: border-color .3s var(--ease); }
+.manifest__end { font-size: .75rem; font-weight: 400; letter-spacing: .42em; text-transform: uppercase; white-space: nowrap; }
+.manifest__end .dot { width: 9px; height: 9px; margin-left: .2em; transition: transform .35s var(--ease); }
+.manifest__row:hover .manifest__text { color: var(--bronze-deep); }
+.manifest__row:hover .manifest__lead { border-color: var(--bronze); }
+.manifest__row:hover .manifest__end .dot { transform: scale(1.9); }
+.manifest__pic { display: inline-flex; align-items: flex-end; vertical-align: -.24em; margin: -.3em .04em; color: var(--ink); }
+.manifest__pic svg { height: 1.42em; width: auto; }
+.manifest__pic--shelf svg + svg { margin-left: -.36em; }
+.manifest__pic--vials { margin: -.3em .36em; }
+.manifest__pic--vials svg { margin: 0 -.37em; }
+.manifest__pic--stamp { vertical-align: -.2em; margin: 0 .1em; }
+.manifest__pic--stamp svg { height: 1em; }
 
 /* Карточка аромата */
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(232px, 1fr)); gap: clamp(32px, 4vw, 52px) clamp(16px, 2.4vw, 32px); }
@@ -519,9 +534,9 @@ input[type="range"] { width: 100%; accent-color: var(--bronze-deep); margin-top:
   .header__tools > button.icon-btn { grid-column: 3; grid-row: 1; }
   .search { grid-column: 1 / -1; grid-row: 2; margin: 0; flex: none; }
   .search__results { left: 0; right: 0; width: auto; }
-  .facts__in { grid-template-columns: 1fr; }
-  .fact, .fact:first-child { padding: 22px 0; }
-  .fact + .fact { border-left: 0; border-top: 1px solid rgba(33, 21, 11, .14); }
+  .manifest__row, .manifest__row:nth-child(2), .manifest__row:nth-child(3) { flex-wrap: wrap; padding-left: 0; row-gap: 12px; }
+  .manifest__text { flex: 1 1 100%; }
+  .manifest__lead { max-width: 56px; }
   .grid { grid-template-columns: 1fr 1fr; gap: 32px 14px; }
   .card__name { font-size: 1.3125rem; }
   .families { grid-template-columns: 1fr; }
