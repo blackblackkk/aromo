@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ароматно и точка — оригинальная парфюмерия, распив от 2 мл</title>
+<meta name="description" content="Более 30 000 позиций оригинальной парфюмерии. Распив и пробники от 2 до 50 мл. Оперативная доставка по всей России.">
+<meta property="og:title" content="Ароматно и точка">
+<meta property="og:description" content="Оригинальная парфюмерия флаконом или по миллилитру. Доставка по всей России.">
+<meta property="og:image" content="assets/img/logo-full.jpg">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<a class="skip" href="#view">Перейти к содержимому</a>
+
+<div class="topbar">
+  <p>Более 30 000 позиций оригинальной парфюмерии<i class="dot"></i>Распив от 2 мл<i class="dot"></i>Доставка по всей России</p>
+</div>
+
+<header class="header" id="header">
+  <div class="header__in">
+    <button class="icon-btn header__burger" data-action="menu-open" aria-label="Открыть меню" aria-controls="menu">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18"/></svg>
+    </button>
+
+    <nav class="nav" id="nav" aria-label="Основная навигация">
+      <a href="#catalog" data-nav="catalog">Каталог</a>
+      <a href="#brands" data-nav="brands">Бренды</a>
+      <a href="#decant" data-nav="decant">Распив</a>
+      <a href="#delivery" data-nav="delivery">Доставка и оплата</a>
+      <a href="#about" data-nav="about">О нас</a>
+    </nav>
+
+    <a class="brand" href="#" aria-label="Ароматно и точка — на главную">
+      <span class="brand__name">Ароматно</span>
+      <span class="brand__sub">и точка<i class="dot"></i></span>
+    </a>
+
+    <div class="header__tools">
+      <form class="search" id="search" role="search" autocomplete="off">
+        <label class="visually-hidden" for="search-input">Поиск по каталогу</label>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l5 5"/></svg>
+        <input id="search-input" type="search" placeholder="Аромат, бренд или нота" aria-controls="search-results">
+        <div class="search__results" id="search-results" hidden></div>
+      </form>
+      <a class="icon-btn" href="#favorites" aria-label="Избранное">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10.1A4.2 4.2 0 0 1 12 7.4a4.2 4.2 0 0 1 7.5 2.5C19.5 15.4 12 20 12 20z"/></svg>
+        <span class="count" id="fav-count" hidden></span>
+      </a>
+      <button class="icon-btn" data-action="cart-open" aria-label="Открыть корзину">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l-1 12H6L5 8z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>
+        <span class="count" id="cart-count" hidden></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="view" tabindex="-1"></main>
+
+<footer class="footer">
+  <div class="footer__in">
+    <div class="footer__brand">
+      <a class="brand brand--light" href="#" aria-label="На главную">
+        <span class="brand__name">Ароматно</span>
+        <span class="brand__sub">и точка<i class="dot"></i></span>
+      </a>
+      <p>Оригинальная парфюмерия флаконом или по миллилитру. Более 30 000 позиций, распив от 2 до 50 мл, доставка по всей России.</p>
+    </div>
+    <div class="footer__col">
+      <h2>Каталог</h2>
+      <a href="#catalog" data-go-gender="f">Женские ароматы</a>
+      <a href="#catalog" data-go-gender="m">Мужские ароматы</a>
+      <a href="#catalog" data-go-gender="u">Унисекс</a>
+      <a href="#brands">Все бренды</a>
+    </div>
+    <div class="footer__col">
+      <h2>Покупателям</h2>
+      <a href="#decant">Как устроен распив</a>
+      <a href="#delivery">Доставка и оплата</a>
+      <a href="#about">О магазине</a>
+      <a href="#favorites">Избранное</a>
+    </div>
+    <div class="footer__col" id="footer-contacts">
+      <h2>Связаться</h2>
+    </div>
+  </div>
+  <p class="footer__legal" id="footer-legal"></p>
+</footer>
+
+<div class="overlay" id="overlay" hidden></div>
+
+<aside class="drawer drawer--left" id="menu" aria-label="Меню" aria-hidden="true">
+  <div class="drawer__head">
+    <h2>Меню</h2>
+    <button class="icon-btn" data-action="menu-close" aria-label="Закрыть меню">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
+    </button>
+  </div>
+  <nav class="menu" aria-label="Меню сайта">
+    <a href="#catalog" data-nav="catalog">Каталог</a>
+    <a href="#brands" data-nav="brands">Бренды</a>
+    <a href="#decant" data-nav="decant">Распив</a>
+    <a href="#delivery" data-nav="delivery">Доставка и оплата</a>
+    <a href="#about" data-nav="about">О нас</a>
+    <a href="#favorites" data-nav="favorites">Избранное</a>
+  </nav>
+</aside>
+
+<aside class="drawer" id="cart" aria-label="Корзина" aria-hidden="true">
+  <div class="drawer__head">
+    <h2>Корзина</h2>
+    <button class="icon-btn" data-action="cart-close" aria-label="Закрыть корзину">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
+    </button>
+  </div>
+  <div class="drawer__body" id="cart-body"></div>
+</aside>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
