@@ -123,12 +123,6 @@
       '</svg>';
   }
 
-  // Почтовый штемпель для строки про доставку
-  var STAMP = '<svg viewBox="0 0 98 48" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor">' +
-    '<circle cx="24" cy="24" r="20" stroke-width="1.4"/><circle cx="24" cy="24" r="13.5" stroke-width="1"/>' +
-    '<path stroke-width="1.3" d="M50 13q4-6 8 0t8 0 8 0 8 0 8 0 8 0M50 24q4-6 8 0t8 0 8 0 8 0 8 0 8 0M50 35q4-6 8 0t8 0 8 0 8 0 8 0 8 0"/></g>' +
-    '<circle cx="24" cy="24" r="3.4" fill="#B18151"/></svg>';
-
   /* ---------- Карточка ---------- */
   function favBtn(p) {
     var on = favs.indexOf(p.id) >= 0;
@@ -178,61 +172,109 @@
     }).join('') + '</div>';
   }
 
+  // Штамп «Осторожно, стекло» для блока про доставку
+  var SEAL = '<svg class="seal" viewBox="0 0 316 220" aria-hidden="true" focusable="false">' +
+    '<defs><path id="seal-top" d="M27 110a83 83 0 0 1 166 0"/><path id="seal-bottom" d="M15 110a95 95 0 0 0 190 0"/></defs>' +
+    '<g fill="none" stroke="currentColor"><circle cx="110" cy="110" r="104" stroke-width="1.6"/><circle cx="110" cy="110" r="65" stroke-width="1"/>' +
+    '<path stroke-width="1.5" d="M222 88q7-9 14 0t14 0 14 0 14 0 14 0 14 0M226 110q7-9 14 0t14 0 14 0 14 0 14 0 14 0M222 132q7-9 14 0t14 0 14 0 14 0 14 0 14 0"/></g>' +
+    '<text class="seal__ring" text-anchor="middle"><textPath href="#seal-top" startOffset="50%">АРОМАТНО И ТОЧКА</textPath></text>' +
+    '<text class="seal__ring" text-anchor="middle"><textPath href="#seal-bottom" startOffset="50%">ОСТОРОЖНО, СТЕКЛО</textPath></text>' +
+    '<circle cx="23" cy="110" r="2.6" fill="currentColor"/><circle cx="197" cy="110" r="2.6" fill="currentColor"/>' +
+    '<text class="seal__a" x="104" y="138" text-anchor="middle">А</text><circle cx="143" cy="132" r="5" fill="currentColor"/></svg>';
+
+  var BLOT_HINT = 'Блоттер — бумажная полоска, на которой пробуют аромат. Выберите свою.';
+  function pickCap(p) { return p.c + ', ' + GENDER_ONE[p.g] + ', ' + p.f.toLowerCase(); }
+
   function viewHome() {
     var hits = PRODUCTS.filter(function (p) { return p.hit; }).slice(0, 8);
-    var fam = FAMILIES.map(function (f) {
-      var n = PRODUCTS.filter(function (p) { return p.f === f.name; }).length;
-      return '<a class="family" href="#catalog" data-go-family="' + esc(f.name) + '">' +
-        '<i style="background:' + f.tint + '"></i><span><b>' + f.name + '</b><span>' + f.text + '</span></span><em>' + n + '</em></a>';
+    var first = hits[0] || PRODUCTS[0];
+
+    var asked = hits.slice(0, 4).map(function (p) {
+      return '<a href="#product-' + p.id + '">' + esc(p.n) + '</a>';
+    }).join(', ');
+
+    var picks = hits.map(function (p) {
+      var notes = [p.t[0], p.h[0], p.d[0]].filter(function (n, i, arr) { return arr.indexOf(n) === i; }).join(', ');
+      return '<li><a class="pick" href="#product-' + p.id + '" data-pick="' + p.id + '">' +
+        '<span class="pick__name">' + esc(p.n) + '<small>' + esc(p.b) + '</small></span>' +
+        '<span class="pick__notes">' + esc(notes) + '</span>' +
+        '<span class="pick__price">от ' + rub(p.min) + '<small>за ' + p.first.ml + ' мл</small></span></a></li>';
     }).join('');
+
+    var ROT = [-4, 2.5, -1.5, 3.5, -2.5, 1, -3.5, 2, -1], DY = [6, 26, 0, 18, 8, 30, 2, 20, 10];
+    var blots = FAMILIES.map(function (f, i) {
+      var n = PRODUCTS.filter(function (p) { return p.f === f.name; }).length;
+      return '<a class="blotter" href="#catalog" data-go-family="' + esc(f.name) + '" data-cap="' + esc(f.name + ' — ' + f.text.toLowerCase()) + '"' +
+        ' style="--tint:' + f.tint + ';--r:' + ROT[i % 9] + 'deg;--y:' + DY[i % 9] + 'px">' +
+        '<span class="blotter__paper"><em>' + n + '</em><b>' + esc(f.name) + '</b></span></a>';
+    }).join('');
+
     var brands = brandsList().map(function (b) {
       return '<a href="#catalog" data-go-brand="' + esc(b.name) + '">' + esc(b.name) + '</a>';
-    }).join('<i class="dot"></i>');
-
-    var shelf = ['tom-ford-lost-cherry', 'mfk-baccarat-rouge-540', 'diptyque-philosykos'].map(function (id) { return byId[id] ? flacon(byId[id], true) : ''; }).join('');
-    var vp = byId['pdm-delina'] || PRODUCTS[0];
-    var vials = [2, 10, 50].map(function (ml) { return vial(vp, ml, true); }).join('');
-    var manifestEnd = '<i class="manifest__lead" aria-hidden="true"></i><span class="manifest__end">и точка<i class="dot"></i></span></a>';
+    }).join(', ');
 
     return '<section class="hero"><div class="hero__in">' +
-      '<div><h1>Оригинальная парфюмерия — флаконом или по&nbsp;миллилитру<i class="dot"></i></h1>' +
-      '<p class="lead">Более 30 000 позиций. Распив и пробники от 2 до 50 мл. Оперативная доставка по всей России.</p>' +
-      '<div class="hero__cta"><a class="btn" href="#catalog">Открыть каталог</a><a class="btn btn--ghost" href="#decant">Как устроен распив</a></div></div>' +
+      '<div class="hero__text"><h1>Оригинальная парфюмерия — флаконом или по&nbsp;миллилитру<i class="dot"></i></h1>' +
+      '<form class="finder js-search" id="finder" role="search" autocomplete="off">' +
+      '<label class="visually-hidden" for="finder-input">Поиск по каталогу</label>' +
+      '<div class="finder__field"><input class="js-q" id="finder-input" type="search" placeholder="Какой аромат ищете?">' +
+      '<button class="icon-btn" type="submit" aria-label="Найти"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l5 5"/></svg></button></div>' +
+      '<div class="search__results" hidden></div>' +
+      '<p class="finder__hint">В каталоге больше 30 000 позиций. Часто ищут: ' + asked + '.</p></form></div>' +
       '<div class="hero__art"><img src="assets/img/logo-mark.jpg" width="800" height="560" alt="Знак «Ароматно и точка»: буква А в виде парфюмерного флакона с золотой крышкой"></div>' +
       '</div></section>' +
 
-      '<section class="manifest" aria-label="Коротко о магазине"><div class="wrap">' +
-      '<a class="manifest__row" href="#catalog"><span class="manifest__text">Более 30 000 <span class="manifest__pic manifest__pic--shelf">' + shelf + '</span> позиций оригинальной парфюмерии</span>' + manifestEnd +
-      '<a class="manifest__row" href="#decant"><span class="manifest__text">Распив и пробники от 2 <span class="manifest__pic manifest__pic--vials">' + vials + '</span> до 50 мл</span>' + manifestEnd +
-      '<a class="manifest__row" href="#delivery"><span class="manifest__text">Оперативная доставка <span class="manifest__pic manifest__pic--stamp">' + STAMP + '</span> по всей России</span>' + manifestEnd +
-      '</div></section>' +
-
-      '<section class="section wrap"><div class="section__head"><h2>Сейчас выбирают<i class="dot"></i></h2>' +
-      '<a class="link" href="#catalog">Смотреть весь каталог</a></div>' +
-      '<div class="grid">' + hits.map(card).join('') + '</div></section>' +
+      '<section class="section wrap duo picks">' +
+      '<div class="duo__side"><h2 class="h2">Сейчас выбирают</h2>' +
+      '<div class="picks__art niche" id="pick-art" data-id="' + first.id + '">' + flacon(first) + '</div>' +
+      '<p class="picks__cap" id="pick-cap">' + esc(pickCap(first)) + '</p></div>' +
+      '<div><ul class="picks__list">' + picks + '</ul>' +
+      '<a class="link picks__more" href="#catalog" data-action="reset-go">Весь каталог</a></div>' +
+      '</section>' +
 
       '<section class="decant" id="decant"><div class="decant__in">' +
-      '<div><h2>Сначала познакомьтесь. Флакон подождёт<i class="dot"></i></h2>' +
-      '<p>Распив — это аромат из оригинального флакона в стеклянном атомайзере. Возьмите пару миллилитров, поносите несколько дней и решите, ваш ли это запах.</p>' +
-      '<a class="btn btn--light" href="#catalog">Выбрать аромат</a></div>' +
+      '<div><h2>Сначала познакомьтесь. Флакон подождёт</h2>' +
+      '<p>Переливаем аромат из оригинального флакона в стеклянный атомайзер — от 2 до 50 мл. Поносите пару дней и решите, ваш ли это запах.</p>' +
+      '<a class="btn btn--light" href="#catalog" data-action="reset-go">Выбрать аромат</a></div>' +
       '<div><div class="ladder" role="group" aria-label="Объём распива">' + ladderHtml() + '</div>' +
       '<div class="ladder__out" id="ladder-out" aria-live="polite">' + ladderOut(5) + '</div></div>' +
       '</div></section>' +
 
-      '<section class="section wrap"><div class="section__head"><h2>По характеру<i class="dot"></i></h2>' +
-      '<p>Не знаете названия — начните с того, как аромат должен звучать.</p></div>' +
-      '<div class="families">' + fam + '</div></section>' +
+      '<section class="section wrap">' +
+      '<h2 class="h2 h2--wide">Не помните название? Начните с характера</h2>' +
+      '<div class="blotters" id="blotters">' + blots + '</div>' +
+      '<p class="blotters__cap" id="blot-cap">' + BLOT_HINT + '</p></section>' +
 
-      '<section class="section wrap"><div class="section__head"><h2>Бренды<i class="dot"></i></h2>' +
-      '<a class="link" href="#brands">Все бренды по алфавиту</a></div>' +
-      '<p class="brandline">' + brands + '</p></section>' +
+      '<section class="section wrap duo">' +
+      '<div class="duo__side"><h2 class="h2">Бренды</h2></div>' +
+      '<div><p class="brandline">' + brands + '</p>' +
+      '<a class="link picks__more" href="#brands">Все бренды по алфавиту</a></div></section>' +
 
-      '<section class="section wrap"><div class="split">' +
-      '<div><h2>Доставим в любой город России<i class="dot"></i></h2>' +
-      '<p>Собираем и отправляем заказы оперативно. Флаконы и атомайзеры упаковываем так, чтобы они доехали целыми.</p>' +
-      '<a class="btn btn--ghost" href="#delivery">Доставка и оплата</a></div>' + faqHtml() +
-      '</div></section>';
+      '<section class="section wrap duo ship">' +
+      '<div class="duo__side">' + SEAL + '</div>' +
+      '<div><h2 class="h2">Оперативная доставка по всей России</h2>' +
+      '<p>Флаконы и атомайзеры упаковываем так, чтобы они доехали целыми. Срок и стоимость зависят от города — их назовёт менеджер, когда будет подтверждать заказ.</p>' +
+      '<a class="link picks__more" href="#delivery">Доставка и оплата</a></div></section>';
   }
+
+  function showPick(a) {
+    var p = byId[a.getAttribute('data-pick')], art = $('#pick-art');
+    if (!p || !art || art.getAttribute('data-id') === p.id) return;
+    art.setAttribute('data-id', p.id);
+    art.innerHTML = flacon(p);
+    $('#pick-cap').textContent = pickCap(p);
+  }
+  function hoverHome(e) {
+    var a = e.target.closest && e.target.closest('.pick'); if (a) showPick(a);
+    var b = e.target.closest && e.target.closest('.blotter'), cap = $('#blot-cap');
+    if (b && cap) cap.textContent = b.getAttribute('data-cap');
+  }
+  document.addEventListener('mouseover', hoverHome);
+  document.addEventListener('focusin', hoverHome);
+  document.addEventListener('mouseout', function (e) {
+    var box = e.target.closest && e.target.closest('#blotters'), cap = $('#blot-cap');
+    if (box && cap && !(e.relatedTarget && box.contains(e.relatedTarget))) cap.textContent = BLOT_HINT;
+  });
 
   /* ---------- Каталог ---------- */
   function filtered() {
@@ -611,30 +653,39 @@
     clearTimeout(toastT); toastT = setTimeout(function () { t.classList.remove('is-on'); }, 2400);
   }
 
-  /* ---------- Поиск в шапке ---------- */
-  var sInput = $('#search-input'), sBox = $('#search-results');
-  function suggest() {
-    var q = sInput.value.trim().toLowerCase();
-    if (q.length < 2) { sBox.hidden = true; return; }
+  /* ---------- Поиск: в шапке и на первом экране ---------- */
+  function hideSuggest() { $$('.search__results').forEach(function (b) { b.hidden = true; }); }
+  function suggest(input) {
+    var box = input.form && input.form.querySelector('.search__results'); if (!box) return;
+    var q = input.value.trim().toLowerCase();
+    if (q.length < 2) { box.hidden = true; return; }
     var words = q.split(/\s+/);
     var list = PRODUCTS.filter(function (p) { return words.every(function (w) { return p.search.indexOf(w) >= 0; }); });
-    sBox.innerHTML = list.length
+    box.innerHTML = list.length
       ? list.slice(0, 5).map(function (p) {
         return '<a class="search__item" href="#product-' + p.id + '">' + flacon(p) + '<span><b>' + esc(p.n) + '</b><span>' + esc(p.b) + ' — от ' + rub(p.min) + '</span></span></a>';
       }).join('') + '<button type="submit" class="search__all">Показать все результаты: ' + list.length + '</button>'
       : '<p class="search__empty">Ничего не нашлось. Попробуйте название латиницей или ноту — например, «ваниль».</p>';
-    sBox.hidden = false;
+    box.hidden = false;
   }
-  sInput.addEventListener('input', suggest);
-  sInput.addEventListener('focus', suggest);
-  $('#search').addEventListener('submit', function (e) {
-    e.preventDefault();
-    var q = sInput.value.trim();
-    F = freshFilters(); F.q = q; shown = PAGE;
-    sBox.hidden = true; sInput.blur();
-    go('catalog');
-  });
-  document.addEventListener('click', function (e) { if (!e.target.closest('#search')) sBox.hidden = true; });
+  document.addEventListener('input', function (e) { if (e.target.matches('.js-q')) suggest(e.target); });
+  document.addEventListener('focusin', function (e) { if (e.target.matches && e.target.matches('.js-q')) suggest(e.target); });
+  document.addEventListener('click', function (e) { if (!e.target.closest('.js-search')) hideSuggest(); });
+
+  // На главной поиск стоит на первом экране; в шапке он появляется, когда первый экран прокручен
+  var heroWatch = null;
+  function watchHero(isHome) {
+    if (heroWatch) { heroWatch.disconnect(); heroWatch = null; }
+    document.body.classList.toggle('is-home', isHome);
+    document.body.classList.remove('is-past-hero');
+    var f = $('#finder');
+    if (!isHome || !f) return;
+    if (!('IntersectionObserver' in window)) { document.body.classList.add('is-past-hero'); return; }
+    heroWatch = new IntersectionObserver(function (en) {
+      document.body.classList.toggle('is-past-hero', !en[0].isIntersecting);
+    });
+    heroWatch.observe(f);
+  }
 
   /* ---------- Маршруты ---------- */
   var TITLES = { catalog: 'Каталог', brands: 'Бренды', delivery: 'Доставка и оплата', about: 'О магазине', favorites: 'Избранное', checkout: 'Оформление заказа' };
@@ -643,7 +694,7 @@
   }
   function route() {
     var h = location.hash.replace(/^#/, ''), view = $('#view'), html, title = '';
-    closeLayers(true); sBox.hidden = true; current = null;
+    closeLayers(true); hideSuggest(); current = null;
     if (h.indexOf('product-') === 0 && byId[h.slice(8)]) { var p = byId[h.slice(8)]; html = viewProduct(p); title = p.b + ' ' + p.n; }
     else if (h === 'catalog') html = viewCatalog();
     else if (h === 'brands') html = viewBrands();
@@ -656,6 +707,7 @@
     document.title = (title ? title + ' — ' : '') + 'Ароматно и точка' + (title ? '' : ' — оригинальная парфюмерия, распив от 2 мл');
     view.innerHTML = html;
     if (h === 'catalog') updateGrid();
+    watchHero(h === '' || h === 'decant');
     $$('[data-nav]').forEach(function (a) {
       if (a.getAttribute('data-nav') === h) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
     });
@@ -762,9 +814,18 @@
   });
   document.addEventListener('submit', function (e) {
     if (e.target.id === 'order') { e.preventDefault(); submitOrder(e.target); }
+    else if (e.target.matches('.js-search')) {
+      e.preventDefault();
+      var qi = e.target.querySelector('.js-q');
+      F = freshFilters(); F.q = qi.value.trim(); shown = PAGE;
+      hideSuggest(); qi.blur();
+      go('catalog');
+    }
   });
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') { if (!sBox.hidden) sBox.hidden = true; else closeLayers(); }
+    if (e.key === 'Escape') {
+      if ($$('.search__results').some(function (b) { return !b.hidden; })) hideSuggest(); else closeLayers();
+    }
   });
 
   /* ---------- Подвал: контакты ---------- */

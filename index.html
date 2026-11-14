@@ -27,10 +27,6 @@
 <body>
 <a class="skip" href="#view">Перейти к содержимому</a>
 
-<div class="topbar">
-  <p>Более 30 000 позиций оригинальной парфюмерии<i class="dot"></i>Распив от 2 мл<i class="dot"></i>Доставка по всей России</p>
-</div>
-
 <header class="header" id="header">
   <div class="header__in">
     <button class="icon-btn header__burger" data-action="menu-open" aria-label="Открыть меню" aria-controls="menu">
@@ -51,11 +47,11 @@
     </a>
 
     <div class="header__tools">
-      <form class="search" id="search" role="search" autocomplete="off">
+      <form class="search js-search" id="search" role="search" autocomplete="off">
         <label class="visually-hidden" for="search-input">Поиск по каталогу</label>
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l5 5"/></svg>
-        <input id="search-input" type="search" placeholder="Аромат, бренд или нота" aria-controls="search-results">
-        <div class="search__results" id="search-results" hidden></div>
+        <input class="js-q" id="search-input" type="search" placeholder="Аромат, бренд или нота">
+        <div class="search__results" hidden></div>
       </form>
       <a class="icon-btn" href="#favorites" aria-label="Избранное">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10.1A4.2 4.2 0 0 1 12 7.4a4.2 4.2 0 0 1 7.5 2.5C19.5 15.4 12 20 12 20z"/></svg>
@@ -78,7 +74,6 @@
         <span class="brand__name">Ароматно</span>
         <span class="brand__sub">и точка<i class="dot"></i></span>
       </a>
-      <p>Оригинальная парфюмерия флаконом или по миллилитру. Более 30 000 позиций, распив от 2 до 50 мл, доставка по всей России.</p>
     </div>
     <div class="footer__col">
       <h2>Каталог</h2>
