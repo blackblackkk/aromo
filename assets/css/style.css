@@ -462,6 +462,22 @@ input[type="range"] { width: 100%; accent-color: var(--bronze-deep); margin-top:
 .steps b { display: block; font-family: var(--serif); font-weight: 600; font-size: 1.375rem; line-height: 1.2; }
 .steps span { color: var(--ink-soft); }
 
+/* О магазине */
+.about__logo { max-width: 1040px; margin: 0 auto; padding: clamp(8px, 2vw, 28px) var(--pad) 0; }
+.about__logo img {
+  width: 100%; height: auto;
+  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 62%, transparent 100%);
+  mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 62%, transparent 100%);
+}
+.about__rows { margin-top: clamp(12px, 3vw, 40px); }
+.about__row {
+  display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: clamp(20px, 6vw, 104px); align-items: start;
+  padding: clamp(28px, 4vw, 56px) 0; border-top: 1px solid rgba(33, 21, 11, .16);
+}
+.about__row:last-child { border-bottom: 1px solid rgba(33, 21, 11, .16); }
+.about__row p { color: var(--ink-soft); max-width: 30em; font-size: 1.0625rem; }
+.about__row .link { display: inline-block; margin-top: 18px; }
+
 /* Корзина */
 .overlay { position: fixed; inset: 0; z-index: 40; background: rgba(33, 21, 11, .42); }
 .drawer {
@@ -554,7 +570,7 @@ input[type="range"] { width: 100%; accent-color: var(--bronze-deep); margin-top:
   .hero__in { grid-template-columns: 1fr; }
   .hero__art { order: -1; max-width: 480px; margin: -20px auto -36px; width: 100%; }
   .hero__art img { width: 100%; margin-left: 0; }
-  .decant__in, .prose, .checkout, .product__layout, .duo { grid-template-columns: 1fr; }
+  .decant__in, .prose, .checkout, .product__layout, .duo, .about__row { grid-template-columns: 1fr; }
   .duo { gap: 28px; }
   .duo__side { position: static; }
   .picks__art, .picks__cap { display: none; }
