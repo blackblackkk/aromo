@@ -226,6 +226,7 @@ main { min-height: 60vh; padding-bottom: clamp(72px, 10vw, 140px); }
   padding: clamp(18px, 2vw, 26px) 0; border-top: 1px solid rgba(33, 21, 11, .16);
   transition: padding .35s var(--ease), background .35s var(--ease);
 }
+.pick__art { display: none; }
 .picks__list li:last-child .pick { border-bottom: 1px solid rgba(33, 21, 11, .16); }
 .pick__name { font-family: var(--serif); font-weight: 500; font-size: clamp(1.5rem, 2.5vw, 2.125rem); line-height: 1.06; transition: color .25s; }
 .pick__name small { display: block; margin-top: 7px; font-family: var(--sans); font-size: .8125rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
@@ -579,6 +580,9 @@ input[type="range"] { width: 100%; accent-color: var(--bronze-deep); margin-top:
   .duo { gap: 28px; }
   .duo__side { position: static; }
   .picks__art, .picks__cap { display: none; }
+  .pick { grid-template-columns: 76px minmax(0, 1.3fr) minmax(0, 1fr) auto; align-items: center; }
+  .pick__art { display: grid; aspect-ratio: 4 / 5; border-radius: 999px 999px 4px 4px; }
+  .pick__art svg { width: 78%; height: auto; margin-top: 10%; }
   .ship .duo__side { max-width: 240px; }
   .product__art { position: static; aspect-ratio: 1; max-height: none; }
   .product__art svg { width: 52%; }
@@ -607,8 +611,9 @@ input[type="range"] { width: 100%; accent-color: var(--bronze-deep); margin-top:
   .search { grid-column: 1 / -1; grid-row: 2; margin: 0; flex: none; }
   .search__results { left: 0; right: 0; width: auto; }
   body.is-home .header .search { display: none; }
-  .pick { grid-template-columns: minmax(0, 1fr) auto; row-gap: 6px; }
-  .pick__notes { grid-column: 1 / -1; grid-row: 2; }
+  .pick { grid-template-columns: 72px minmax(0, 1fr) auto; column-gap: 14px; row-gap: 4px; align-items: start; }
+  .pick__art { grid-row: 1 / span 2; align-self: center; }
+  .pick__notes { grid-column: 2 / -1; grid-row: 2; }
   .pick:hover, .pick:focus-visible { padding-left: 0; padding-right: 0; background: none; }
   .blotters { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 30px 8px; padding-bottom: 26px; }
   .blotter { padding-top: 0; }

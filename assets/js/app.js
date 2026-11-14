@@ -196,6 +196,7 @@
     var picks = hits.map(function (p) {
       var notes = [p.t[0], p.h[0], p.d[0]].filter(function (n, i, arr) { return arr.indexOf(n) === i; }).join(', ');
       return '<li><a class="pick" href="#product-' + p.id + '" data-pick="' + p.id + '">' +
+        '<span class="pick__art niche" aria-hidden="true">' + flacon(p) + '</span>' +
         '<span class="pick__name">' + esc(p.n) + '<small>' + esc(p.b) + '</small></span>' +
         '<span class="pick__notes">' + esc(notes) + '</span>' +
         '<span class="pick__price">от ' + rub(p.min) + '<small>за ' + p.first.ml + ' мл</small></span></a></li>';
