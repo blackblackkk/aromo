@@ -221,7 +221,7 @@
       '<button class="icon-btn" type="submit" aria-label="Найти"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l5 5"/></svg></button></div>' +
       '<div class="search__results" hidden></div>' +
       '<p class="finder__hint">В каталоге больше 30 000 позиций. Часто ищут: ' + asked + '.</p></form></div>' +
-      '<div class="hero__art"><img src="assets/img/logo-mark.jpg" width="800" height="560" alt="Знак «Ароматно и точка»: буква А в виде парфюмерного флакона с золотой крышкой"></div>' +
+      '<div class="hero__art"><img src="assets/img/logo-mark.webp" srcset="assets/img/logo-mark-480.webp 480w, assets/img/logo-mark.webp 800w" sizes="(max-width: 720px) 300px, (max-width: 900px) 480px, 60vw" width="800" height="560" fetchpriority="high" decoding="async" alt="Знак «Ароматно и точка»: буква А в виде парфюмерного флакона с золотой крышкой"></div>' +
       '</div></section>' +
 
       '<section class="section wrap duo picks">' +
@@ -466,7 +466,7 @@
       ['Оперативная доставка по всей России', 'Быстро собираем заказы и отправляем в любой город. Флаконы и атомайзеры упаковываем так, чтобы они доехали целыми.', 'delivery', 'Доставка и оплата']
     ];
     return '<section class="about"><h1 class="visually-hidden">О магазине «Ароматно и точка»</h1>' +
-      '<div class="about__logo"><img src="assets/img/logo-full.jpg" width="1536" height="1024" alt="Логотип «Ароматно и точка»: буква А в виде парфюмерного флакона и название магазина"></div>' +
+      '<div class="about__logo"><img src="assets/img/logo-full.webp" srcset="assets/img/logo-full-768.webp 768w, assets/img/logo-full.webp 1536w" sizes="(max-width: 1040px) 100vw, 1040px" width="1536" height="1024" decoding="async" alt="Логотип «Ароматно и точка»: буква А в виде парфюмерного флакона и название магазина"></div>' +
       '<div class="wrap about__rows">' + rows.map(function (r) {
         return '<div class="about__row"><h2 class="h2">' + r[0] + '</h2>' +
           '<div><p>' + r[1] + '</p><a class="link" href="#' + r[2] + '"' + (r[2] === 'catalog' ? ' data-action="reset-go"' : '') + '>' + r[3] + '</a></div></div>';

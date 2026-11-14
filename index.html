@@ -21,6 +21,15 @@
 <link rel="icon" href="assets/img/icon-192.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="assets/img/icon-180.png">
 <link rel="manifest" href="site.webmanifest">
+<script>
+  // Главной сразу нужна картинка первого экрана — начинаем грузить её до скриптов
+  if (!/^#(?!decant$)./.test(location.hash)) {
+    var l = document.createElement('link'); l.rel = 'preload'; l.as = 'image';
+    l.setAttribute('imagesrcset', 'assets/img/logo-mark-480.webp 480w, assets/img/logo-mark.webp 800w');
+    l.setAttribute('imagesizes', '(max-width: 720px) 300px, (max-width: 900px) 480px, 60vw');
+    l.setAttribute('fetchpriority', 'high'); document.head.appendChild(l);
+  }
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Golos+Text:wght@400;500&display=swap" rel="stylesheet">
@@ -129,8 +138,8 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="assets/js/config.js"></script>
-<script src="assets/js/data.js"></script>
-<script src="assets/js/app.js"></script>
+<script src="assets/js/config.js" defer></script>
+<script src="assets/js/data.js" defer></script>
+<script src="assets/js/app.js" defer></script>
 </body>
 </html>
