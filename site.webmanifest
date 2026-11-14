@@ -1,0 +1,14 @@
+{
+  "name": "Ароматно и точка",
+  "short_name": "Ароматно",
+  "description": "Оригинальная парфюмерия флаконом или по миллилитру. Доставка по всей России.",
+  "lang": "ru",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#EEE4DA",
+  "theme_color": "#EEE4DA",
+  "icons": [
+    { "src": "assets/img/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "assets/img/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
