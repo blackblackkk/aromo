@@ -147,7 +147,7 @@
     return DECANTS.map(function (ml) {
       var d = Math.round(12 + Math.sqrt(ml) * 9.5);
       return '<button type="button" data-action="ladder" data-ml="' + ml + '" aria-pressed="' + (ml === 5) + '">' +
-        '<i style="--d:' + d + 'px"></i>' + ml + ' мл</button>';
+        '<i style="--d:' + d + 'px"></i><span>' + ml + '<small> мл</small></span></button>';
     }).join('');
   }
   function ladderOut(ml) {
@@ -201,12 +201,12 @@
         '<span class="pick__price">от ' + rub(p.min) + '<small>за ' + p.first.ml + ' мл</small></span></a></li>';
     }).join('');
 
-    var ROT = [-4, 2.5, -1.5, 3.5, -2.5, 1, -3.5, 2, -1], DY = [6, 26, 0, 18, 8, 30, 2, 20, 10];
+    var ROT = [-4, 2.5, -1.5, 3.5, -2.5, 1, -3.5, 2, -1], DY = [0, 14, 4, 20, 8, 0, 16, 6, 12];
     var blots = FAMILIES.map(function (f, i) {
       var n = PRODUCTS.filter(function (p) { return p.f === f.name; }).length;
       return '<a class="blotter" href="#catalog" data-go-family="' + esc(f.name) + '" data-cap="' + esc(f.name + ' — ' + f.text.toLowerCase()) + '"' +
-        ' style="--tint:' + f.tint + ';--r:' + ROT[i % 9] + 'deg;--y:' + DY[i % 9] + 'px">' +
-        '<span class="blotter__paper"><em>' + n + '</em><b>' + esc(f.name) + '</b></span></a>';
+        ' style="--tint:' + f.tint + ';--y:' + DY[i % 9] + 'px">' +
+        '<span class="blotter__strip"><i></i></span><b>' + esc(f.name) + '</b><em>' + n + '</em></a>';
     }).join('');
 
     var brands = brandsList().map(function (b) {
@@ -370,7 +370,7 @@
     var dots = p.decants.map(function (v) {
       var d = Math.round(12 + Math.sqrt(v.ml) * 7);
       return '<button type="button" class="vol-dot" data-action="vol" data-type="d" data-ml="' + v.ml + '" aria-pressed="' + (sel.type === 'd' && sel.ml === v.ml) + '">' +
-        '<i style="width:' + d + 'px;height:' + d + 'px"></i>' + v.ml + ' мл</button>';
+        '<i style="width:' + d + 'px;height:' + d + 'px"></i><span>' + v.ml + '<small> мл</small></span></button>';
     }).join('');
     var pills = p.bottles.map(function (v) {
       return '<button type="button" class="vol-pill" data-action="vol" data-type="b" data-ml="' + v.ml + '" aria-pressed="' + (sel.type === 'b' && sel.ml === v.ml) + '">' + v.ml + ' мл</button>';
