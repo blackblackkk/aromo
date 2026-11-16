@@ -221,7 +221,7 @@
     }).join('');
 
     return '<section class="hero"><div class="hero__in">' +
-      '<div class="hero__text"><h1>Оригинальная парфюмерия — флаконом или по&nbsp;миллилитру<i class="dot"></i></h1>' +
+      '<div class="hero__text"><h1>Только оригинальная парфюмерия<i class="dot"></i></h1>' +
       '<form class="finder js-search" id="finder" role="search" autocomplete="off">' +
       '<label class="visually-hidden" for="finder-input">Поиск по каталогу</label>' +
       '<div class="finder__field">' + ICON.search + '<input class="js-q" id="finder-input" type="search" placeholder="Аромат, бренд или нота">' +
