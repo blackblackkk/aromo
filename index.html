@@ -26,7 +26,7 @@
   if (!/^#(?!decant$)./.test(location.hash)) {
     var l = document.createElement('link'); l.rel = 'preload'; l.as = 'image';
     l.setAttribute('imagesrcset', 'assets/img/logo-mark-480.webp 480w, assets/img/logo-mark.webp 800w');
-    l.setAttribute('imagesizes', '(max-width: 720px) 300px, (max-width: 900px) 480px, 60vw');
+    l.setAttribute('imagesizes', '(max-width: 900px) 320px, 60vw');
     l.setAttribute('fetchpriority', 'high'); document.head.appendChild(l);
   }
 </script>
@@ -44,6 +44,11 @@
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18"/></svg>
     </button>
 
+    <a class="brand" href="#" aria-label="Ароматно и точка — на главную">
+      <span class="brand__name">Ароматно</span>
+      <span class="brand__sub">и точка<i class="dot"></i></span>
+    </a>
+
     <nav class="nav" id="nav" aria-label="Основная навигация">
       <a href="#catalog" data-nav="catalog">Каталог</a>
       <a href="#brands" data-nav="brands">Бренды</a>
@@ -52,11 +57,6 @@
       <a href="#about" data-nav="about">О нас</a>
     </nav>
 
-    <a class="brand" href="#" aria-label="Ароматно и точка — на главную">
-      <span class="brand__name">Ароматно</span>
-      <span class="brand__sub">и точка<i class="dot"></i></span>
-    </a>
-
     <div class="header__tools">
       <form class="search js-search" id="search" role="search" autocomplete="off">
         <label class="visually-hidden" for="search-input">Поиск по каталогу</label>
@@ -64,13 +64,16 @@
         <input class="js-q" id="search-input" type="search" placeholder="Аромат, бренд или нота">
         <div class="search__results" hidden></div>
       </form>
-      <a class="icon-btn" href="#favorites" aria-label="Избранное">
+      <button class="icon-btn header__find" data-action="search-open" aria-label="Открыть поиск">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l5 5"/></svg>
+      </button>
+      <a class="tool" href="#favorites" data-nav="favorites">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10.1A4.2 4.2 0 0 1 12 7.4a4.2 4.2 0 0 1 7.5 2.5C19.5 15.4 12 20 12 20z"/></svg>
-        <span class="count" id="fav-count" hidden></span>
+        <span>Избранное</span><i class="count js-fav-count" hidden></i>
       </a>
-      <button class="icon-btn" data-action="cart-open" aria-label="Открыть корзину">
+      <button class="tool" data-action="cart-open">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l-1 12H6L5 8z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>
-        <span class="count" id="cart-count" hidden></span>
+        <span>Корзина</span><i class="count js-cart-count" hidden></i>
       </button>
     </div>
   </div>
@@ -107,7 +110,43 @@
   <p class="footer__legal" id="footer-legal"></p>
 </footer>
 
+<nav class="tabbar" aria-label="Разделы магазина">
+  <a href="#" data-nav="home">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V20h-5.5v-5.5h-5V20H4z"/></svg>
+    <span>Главная</span>
+  </a>
+  <a href="#catalog" data-nav="catalog" data-action="reset-go">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 4.5h6v6h-6zM13.5 4.5h6v6h-6zM4.5 13.5h6v6h-6zM13.5 13.5h6v6h-6z"/></svg>
+    <span>Каталог</span>
+  </a>
+  <a href="#favorites" data-nav="favorites">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10.1A4.2 4.2 0 0 1 12 7.4a4.2 4.2 0 0 1 7.5 2.5C19.5 15.4 12 20 12 20z"/></svg>
+    <span>Избранное</span><i class="count js-fav-count" hidden></i>
+  </a>
+  <button data-action="cart-open">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l-1 12H6L5 8z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>
+    <span>Корзина</span><i class="count js-cart-count" hidden></i>
+  </button>
+  <button data-action="menu-open" aria-controls="menu">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    <span>Ещё</span>
+  </button>
+</nav>
+
 <div class="overlay" id="overlay" hidden></div>
+
+<div class="sheet" id="search-sheet" hidden>
+  <form class="sheet__top js-search" role="search" autocomplete="off">
+    <label class="visually-hidden" for="sheet-input">Поиск по каталогу</label>
+    <div class="sheet__field">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l5 5"/></svg>
+      <input class="js-q" id="sheet-input" type="search" placeholder="Аромат, бренд или нота" enterkeyhint="search">
+    </div>
+    <button type="button" class="sheet__close" data-action="search-close">Закрыть</button>
+    <div class="search__results" hidden></div>
+  </form>
+  <div class="sheet__popular" id="sheet-popular"></div>
+</div>
 
 <aside class="drawer drawer--left" id="menu" aria-label="Меню" aria-hidden="true">
   <div class="drawer__head">
@@ -117,12 +156,12 @@
     </button>
   </div>
   <nav class="menu" aria-label="Меню сайта">
-    <a href="#catalog" data-nav="catalog">Каталог</a>
+    <a class="menu__dup" href="#catalog" data-nav="catalog">Каталог</a>
     <a href="#brands" data-nav="brands">Бренды</a>
-    <a href="#decant" data-nav="decant">Распив</a>
+    <a href="#decant" data-nav="decant">Как устроен распив</a>
     <a href="#delivery" data-nav="delivery">Доставка и оплата</a>
-    <a href="#about" data-nav="about">О нас</a>
-    <a href="#favorites" data-nav="favorites">Избранное</a>
+    <a href="#about" data-nav="about">О магазине</a>
+    <a class="menu__dup" href="#favorites" data-nav="favorites">Избранное</a>
   </nav>
 </aside>
 

@@ -68,7 +68,9 @@
   var ICON = {
     heart: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10.1A4.2 4.2 0 0 1 12 7.4a4.2 4.2 0 0 1 7.5 2.5C19.5 15.4 12 20 12 20z"/></svg>',
     x: '<svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 1l8 8M9 1L1 9"/></svg>',
-    close: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>'
+    close: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>',
+    search: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l5 5"/></svg>',
+    chev: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>'
   };
 
   /* ---------- Иллюстрации: условные флаконы ---------- */
@@ -190,8 +192,8 @@
     var first = hits[0] || PRODUCTS[0];
 
     var asked = hits.slice(0, 4).map(function (p) {
-      return '<a href="#product-' + p.id + '">' + esc(p.n) + '</a>';
-    }).join(', ');
+      return '<a class="tag" href="#product-' + p.id + '">' + esc(p.n) + '</a>';
+    }).join('');
 
     var picks = hits.map(function (p) {
       var notes = [p.t[0], p.h[0], p.d[0]].filter(function (n, i, arr) { return arr.indexOf(n) === i; }).join(', ');
@@ -202,7 +204,7 @@
         '<span class="pick__price">от ' + rub(p.min) + '<small>за ' + p.first.ml + ' мл</small></span></a></li>';
     }).join('');
 
-    var ROT = [-4, 2.5, -1.5, 3.5, -2.5, 1, -3.5, 2, -1], DY = [0, 14, 4, 20, 8, 0, 16, 6, 12];
+    var DY = [0, 14, 4, 20, 8, 0, 16, 6, 12];
     var blots = FAMILIES.map(function (f, i) {
       var n = PRODUCTS.filter(function (p) { return p.f === f.name; }).length;
       return '<a class="blotter" href="#catalog" data-go-family="' + esc(f.name) + '" data-cap="' + esc(f.name + ' — ' + f.text.toLowerCase()) + '"' +
@@ -210,34 +212,46 @@
         '<span class="blotter__strip"><i></i></span><b>' + esc(f.name) + '</b><em>' + n + '</em></a>';
     }).join('');
 
-    var brands = brandsList().map(function (b) {
-      return '<a href="#catalog" data-go-brand="' + esc(b.name) + '">' + esc(b.name) + '</a>';
-    }).join(', ');
+    // На главной — двенадцать брендов: сначала те, чьи ароматы в «Сейчас выбирают»
+    var top = [];
+    hits.forEach(function (p) { if (top.indexOf(p.b) < 0) top.push(p.b); });
+    brandsList().forEach(function (b) { if (top.length < 12 && top.indexOf(b.name) < 0) top.push(b.name); });
+    var brands = top.sort(function (a, b) { return a.localeCompare(b); }).map(function (b) {
+      return '<a href="#catalog" data-go-brand="' + esc(b) + '">' + esc(b) + '</a>';
+    }).join('');
 
     return '<section class="hero"><div class="hero__in">' +
       '<div class="hero__text"><h1>Оригинальная парфюмерия — флаконом или по&nbsp;миллилитру<i class="dot"></i></h1>' +
       '<form class="finder js-search" id="finder" role="search" autocomplete="off">' +
       '<label class="visually-hidden" for="finder-input">Поиск по каталогу</label>' +
-      '<div class="finder__field"><input class="js-q" id="finder-input" type="search" placeholder="Какой аромат ищете?">' +
-      '<button class="icon-btn" type="submit" aria-label="Найти"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l5 5"/></svg></button></div>' +
+      '<div class="finder__field">' + ICON.search + '<input class="js-q" id="finder-input" type="search" placeholder="Аромат, бренд или нота">' +
+      '<button class="btn" type="submit">Найти</button></div>' +
       '<div class="search__results" hidden></div>' +
-      '<p class="finder__hint">В каталоге больше 30 000 позиций. Часто ищут: ' + asked + '.</p></form></div>' +
-      '<div class="hero__art"><img src="assets/img/logo-mark.webp" srcset="assets/img/logo-mark-480.webp 480w, assets/img/logo-mark.webp 800w" sizes="(max-width: 720px) 300px, (max-width: 900px) 480px, 60vw" width="800" height="560" fetchpriority="high" decoding="async" alt="Знак «Ароматно и точка»: буква А в виде парфюмерного флакона с золотой крышкой"></div>' +
+      '<p class="finder__hint">В каталоге больше 30 000 позиций. Часто ищут:</p>' +
+      '<div class="tags">' + asked + '</div></form></div>' +
+      '<div class="hero__art"><img src="assets/img/logo-mark.webp" srcset="assets/img/logo-mark-480.webp 480w, assets/img/logo-mark.webp 800w" sizes="(max-width: 900px) 320px, 60vw" width="800" height="560" fetchpriority="high" decoding="async" alt="Знак «Ароматно и точка»: буква А в виде парфюмерного флакона с золотой крышкой"></div>' +
       '</div></section>' +
+
+      '<nav class="quick wrap" aria-label="Разделы каталога">' +
+      '<a href="#catalog" data-go-gender="f">Женские' + ICON.chev + '</a>' +
+      '<a href="#catalog" data-go-gender="m">Мужские' + ICON.chev + '</a>' +
+      '<a href="#catalog" data-go-gender="u">Унисекс' + ICON.chev + '</a>' +
+      '<a href="#brands">Все бренды' + ICON.chev + '</a></nav>' +
 
       '<section class="section wrap duo picks">' +
       '<div class="duo__side"><h2 class="h2">Сейчас выбирают</h2>' +
       '<div class="picks__art niche" id="pick-art" data-id="' + first.id + '">' + flacon(first) + '</div>' +
       '<p class="picks__cap" id="pick-cap">' + esc(pickCap(first)) + '</p></div>' +
       '<div><ul class="picks__list">' + picks + '</ul>' +
-      '<a class="link picks__more" href="#catalog" data-action="reset-go">Весь каталог</a></div>' +
+      '<a class="btn btn--ghost picks__more" href="#catalog" data-action="reset-go">Смотреть весь каталог</a></div>' +
       '</section>' +
 
       '<section class="decant" id="decant"><div class="decant__in">' +
       '<div><h2>Сначала познакомьтесь. Флакон подождёт</h2>' +
       '<p>Переливаем аромат из оригинального флакона в стеклянный атомайзер — от 2 до 50 мл. Поносите пару дней и решите, ваш ли это запах.</p>' +
       '<a class="btn btn--light" href="#catalog" data-action="reset-go">Выбрать аромат</a></div>' +
-      '<div><div class="ladder" role="group" aria-label="Объём распива">' + ladderHtml() + '</div>' +
+      '<div><p class="ladder__hint" id="ladder-hint">Нажмите на объём — покажем, на сколько его хватит</p>' +
+      '<div class="ladder" role="group" aria-labelledby="ladder-hint">' + ladderHtml() + '</div>' +
       '<div class="ladder__out" id="ladder-out" aria-live="polite">' + ladderOut(5) + '</div></div>' +
       '</div></section>' +
 
@@ -248,14 +262,14 @@
 
       '<section class="section wrap duo">' +
       '<div class="duo__side"><h2 class="h2">Бренды</h2></div>' +
-      '<div><p class="brandline">' + brands + '</p>' +
-      '<a class="link picks__more" href="#brands">Все бренды по алфавиту</a></div></section>' +
+      '<div><div class="brandgrid">' + brands + '</div>' +
+      '<a class="btn btn--ghost picks__more" href="#brands">Все бренды по алфавиту</a></div></section>' +
 
       '<section class="section wrap duo ship">' +
       '<div class="duo__side">' + SEAL + '</div>' +
       '<div><h2 class="h2">Оперативная доставка по всей России</h2>' +
       '<p>Флаконы и атомайзеры упаковываем так, чтобы они доехали целыми. Срок и стоимость зависят от города — их назовёт менеджер, когда будет подтверждать заказ.</p>' +
-      '<a class="link picks__more" href="#delivery">Доставка и оплата</a></div></section>';
+      '<a class="btn btn--ghost picks__more" href="#delivery">Доставка и оплата</a></div></section>';
   }
 
   function showPick(a) {
@@ -311,28 +325,34 @@
   function viewCatalog() {
     var pb = priceBounds(), max = F.max == null ? pb.hi : F.max;
     var count = function (k, v) { return PRODUCTS.filter(function (p) { return p[k] === v; }).length; };
-    var genders = ['f', 'm', 'u'].map(function (g) { return check('gender', g, GENDER[g], count('g', g), F.gender.indexOf(g) >= 0); }).join('');
+    var segs = [['', 'Все'], ['f', GENDER.f], ['m', GENDER.m], ['u', GENDER.u]].map(function (s) {
+      var on = s[0] ? (F.gender.length === 1 && F.gender[0] === s[0]) : !F.gender.length;
+      return '<button type="button" class="seg" data-action="seg" data-g="' + s[0] + '" aria-pressed="' + on + '">' + s[1] + '</button>';
+    }).join('');
     var fams = FAMILIES.map(function (f) { return check('family', f.name, f.name, count('f', f.name), F.family.indexOf(f.name) >= 0); }).join('');
     var brands = brandsList().map(function (b) { return check('brand', b.name, b.name, b.n, F.brand.indexOf(b.name) >= 0); }).join('');
     var sortOpt = [['pop', 'Сначала популярные'], ['asc', 'Сначала дешевле'], ['desc', 'Сначала дороже'], ['name', 'По названию'], ['brand', 'По бренду']]
       .map(function (o) { return '<option value="' + o[0] + '"' + (F.sort === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('');
 
     return '<section class="page"><header class="page__head"><h1>Каталог<i class="dot"></i></h1><p id="cat-count" aria-live="polite"></p></header>' +
+      '<div class="segs" role="group" aria-label="Для кого">' + segs + '</div>' +
       '<div class="catalog__layout">' +
       '<aside class="filters" id="filters" aria-label="Фильтры">' +
       '<div class="filters__head"><h2>Фильтры</h2><button class="icon-btn" data-action="filters-close" aria-label="Закрыть фильтры">' + ICON.close + '</button></div>' +
-      '<fieldset><legend>Для кого</legend>' + genders + '</fieldset>' +
+      '<div class="filters__body">' +
       '<fieldset><legend>Характер</legend>' + fams + '</fieldset>' +
       '<fieldset><legend>Бренд</legend><input type="search" id="brand-find" placeholder="Найти бренд" aria-label="Найти бренд в списке">' +
       '<div class="filters__scroll" id="brand-list">' + brands + '</div></fieldset>' +
       '<fieldset class="range"><legend>Цена</legend><label for="price-max">До <output id="price-out">' + rub(max) + '</output></label>' +
       '<input type="range" id="price-max" min="' + pb.lo + '" max="' + pb.hi + '" step="100" value="' + max + '">' +
       '<small>Считаем по самому маленькому объёму аромата.</small></fieldset>' +
-      '<button class="link filters__reset" data-action="reset">Сбросить фильтры</button>' +
+      '</div>' +
+      '<div class="filters__foot"><button class="link filters__reset" data-action="reset">Сбросить<span> фильтры</span></button>' +
+      '<button class="btn filters__apply" id="filters-apply" data-action="filters-close">Показать</button></div>' +
       '</aside>' +
-      '<div><div class="toolbar"><button class="btn btn--ghost toolbar__filters" data-action="filters-open">Фильтры</button>' +
-      '<div class="chips" id="chips"></div>' +
-      '<label class="sort"><span>Сортировка</span><select id="sort" aria-label="Сортировка">' + sortOpt + '</select></label></div>' +
+      '<div><div class="toolbar"><button class="btn btn--ghost toolbar__filters" data-action="filters-open">Фильтры<i class="count" id="filters-n" hidden></i></button>' +
+      '<label class="sort"><span>Сортировка</span><select id="sort" aria-label="Сортировка">' + sortOpt + '</select></label>' +
+      '<div class="chips" id="chips"></div></div>' +
       '<div class="grid" id="grid"></div><div class="more" id="more"></div></div>' +
       '</div></section>';
   }
@@ -347,11 +367,13 @@
     $('#cat-count').textContent = n ? 'Найдено ' + n + ' ' + plural(n, ['аромат', 'аромата', 'ароматов']) : 'Ничего не нашлось';
     var chips = [];
     if (F.q.trim()) chips.push(chip('q', '', 'Поиск: ' + F.q.trim()));
-    F.gender.forEach(function (g) { chips.push(chip('gender', g, GENDER[g])); });
     F.family.forEach(function (f) { chips.push(chip('family', f, f)); });
     F.brand.forEach(function (b) { chips.push(chip('brand', b, b)); });
     if (F.max != null) chips.push(chip('max', '', 'До ' + rub(F.max)));
     $('#chips').innerHTML = chips.join('');
+    var act = F.family.length + F.brand.length + (F.max != null ? 1 : 0), fn = $('#filters-n'), ap = $('#filters-apply');
+    if (fn) { fn.hidden = !act; fn.textContent = act; }
+    if (ap) ap.textContent = n ? 'Показать ' + n + ' ' + plural(n, ['аромат', 'аромата', 'ароматов']) : 'Ничего не нашлось';
 
     if (!n) {
       grid.outerHTML = '<div class="empty" id="grid"><h2>По этим условиям ароматов нет</h2>' +
@@ -367,17 +389,22 @@
   }
 
   /* ---------- Страница аромата ---------- */
+  function volTile(v) {
+    var on = sel.type === v.type && sel.ml === v.ml, d = Math.round(9 + Math.sqrt(v.ml) * 3.4);
+    return '<button type="button" class="vol" data-action="vol" data-type="' + v.type + '" data-ml="' + v.ml + '" aria-pressed="' + on + '">' +
+      '<span class="vol__ico">' + (v.type === 'd' ? '<i style="width:' + d + 'px;height:' + d + 'px"></i>' : '<i class="vol__flask"></i>') + '</span>' +
+      '<b>' + v.ml + ' мл</b><span>' + rub(v.price) + '</span></button>';
+  }
   function volsHtml(p) {
-    var dots = p.decants.map(function (v) {
-      var d = Math.round(12 + Math.sqrt(v.ml) * 7);
-      return '<button type="button" class="vol-dot" data-action="vol" data-type="d" data-ml="' + v.ml + '" aria-pressed="' + (sel.type === 'd' && sel.ml === v.ml) + '">' +
-        '<i style="width:' + d + 'px;height:' + d + 'px"></i><span>' + v.ml + '<small> мл</small></span></button>';
-    }).join('');
-    var pills = p.bottles.map(function (v) {
-      return '<button type="button" class="vol-pill" data-action="vol" data-type="b" data-ml="' + v.ml + '" aria-pressed="' + (sel.type === 'b' && sel.ml === v.ml) + '">' + v.ml + ' мл</button>';
-    }).join('');
-    return (dots ? '<h2 id="vd">Распив</h2><div class="vols__dots" role="group" aria-labelledby="vd">' + dots + '</div>' : '') +
-      '<h2 id="vb">Флакон</h2><div class="vols__bottles" role="group" aria-labelledby="vb">' + pills + '</div>';
+    return (p.decants.length ? '<h2 id="vd">Распив<small>в стеклянном атомайзере</small></h2>' +
+      '<div class="vols__grid" role="group" aria-labelledby="vd">' + p.decants.map(volTile).join('') + '</div>' : '') +
+      '<h2 id="vb">Флакон<small>целиком, в упаковке</small></h2>' +
+      '<div class="vols__grid" role="group" aria-labelledby="vb">' + p.bottles.map(volTile).join('') + '</div>';
+  }
+  function buybarHtml(p) {
+    var v = findVariant(p, sel.type, sel.ml);
+    return '<div><b>' + rub(v.price * qty) + '</b><span>' + variantLabel(v) + (qty > 1 ? ' × ' + qty : '') + '</span></div>' +
+      '<button class="btn" data-action="add">В корзину</button>';
   }
   function priceHtml(p) {
     var v = findVariant(p, sel.type, sel.ml);
@@ -409,14 +436,15 @@
       '<p class="product__price" id="p-price" aria-live="polite">' + priceHtml(p) + '</p>' +
       '<div class="buy"><div class="qty"><button type="button" data-action="qty" data-d="-1" aria-label="Уменьшить количество">−</button>' +
       '<output id="p-qty">1</output><button type="button" data-action="qty" data-d="1" aria-label="Увеличить количество">+</button></div>' +
-      '<button class="btn" data-action="add">Добавить в корзину</button>' + favBtn(p) + '</div>' +
+      '<button class="btn buy__add" data-action="add">Добавить в корзину</button>' + favBtn(p) + '</div>' +
       pyramidHtml(p) +
       '<ul class="assure"><li>Только оригинальная парфюмерия</li>' +
       '<li>Распив — из оригинального флакона в стеклянный атомайзер</li>' +
       '<li>Доставка по всей России</li></ul>' +
       '</div></div>' +
-      (related.length ? '<section class="section"><div class="section__head"><h2>Близкие по характеру<i class="dot"></i></h2></div>' +
+      (related.length ? '<section class="section"><h2 class="h2 h2--wide">Близкие по характеру</h2>' +
         '<div class="grid">' + related.map(card).join('') + '</div></section>' : '') +
+      '<div class="buybar" id="buybar">' + buybarHtml(p) + '</div>' +
       '</section>';
   }
 
@@ -424,6 +452,7 @@
     $('#p-vols').innerHTML = volsHtml(current);
     $('#p-price').innerHTML = priceHtml(current);
     $('#p-qty').textContent = qty;
+    $('#buybar').innerHTML = buybarHtml(current);
     $('#p-art').innerHTML = sel.type === 'd' ? vial(current, sel.ml) : flacon(current);
   }
 
@@ -492,9 +521,9 @@
   function saveCart() { store.set('aromo-cart', cart); renderCart(); }
 
   function renderCart() {
-    var n = cartCount(), cc = $('#cart-count'), fc = $('#fav-count');
-    cc.hidden = !n; cc.textContent = n;
-    fc.hidden = !favs.length; fc.textContent = favs.length;
+    var n = cartCount();
+    $$('.js-cart-count').forEach(function (c) { c.hidden = !n; c.textContent = n; });
+    $$('.js-fav-count').forEach(function (c) { c.hidden = !favs.length; c.textContent = favs.length; });
     var body = $('#cart-body');
     if (!cart.length) {
       body.innerHTML = '<div class="cart-empty"><h3>В корзине пока пусто</h3>' +
@@ -656,11 +685,14 @@
   }
 
   /* ---------- Поиск: в шапке и на первом экране ---------- */
-  function hideSuggest() { $$('.search__results').forEach(function (b) { b.hidden = true; }); }
+  function hideSuggest() {
+    $$('.search__results').forEach(function (b) { b.hidden = true; });
+    var pop = $('#sheet-popular'); if (pop) pop.hidden = false;
+  }
   function suggest(input) {
     var box = input.form && input.form.querySelector('.search__results'); if (!box) return;
     var q = input.value.trim().toLowerCase();
-    if (q.length < 2) { box.hidden = true; return; }
+    if (q.length < 2) { box.hidden = true; syncPopular(input, box); return; }
     var words = q.split(/\s+/);
     var list = PRODUCTS.filter(function (p) { return words.every(function (w) { return p.search.indexOf(w) >= 0; }); });
     box.innerHTML = list.length
@@ -669,9 +701,32 @@
       }).join('') + '<button type="submit" class="search__all">Показать все результаты: ' + list.length + '</button>'
       : '<p class="search__empty">Ничего не нашлось. Попробуйте название латиницей или ноту — например, «ваниль».</p>';
     box.hidden = false;
+    syncPopular(input, box);
   }
+  function syncPopular(input, box) {
+    var pop = input.form.parentNode.querySelector('.sheet__popular'); if (pop) pop.hidden = !box.hidden;
+  }
+
+  // Поиск на телефоне: отдельный экран поверх страницы
+  var sheet = $('#search-sheet'), isPhone = window.matchMedia('(max-width: 900px)');
+  function openSearch() {
+    closeLayers(true);
+    sheet.hidden = false; document.body.classList.add('is-locked');
+    var i = $('#sheet-input'); i.value = ''; hideSuggest(); $('#sheet-popular').hidden = false; i.focus();
+  }
+  function closeSearch() {
+    if (sheet.hidden) return;
+    sheet.hidden = true; document.body.classList.remove('is-locked');
+  }
+  $('#sheet-popular').innerHTML = '<h2>Часто ищут</h2>' + PRODUCTS.filter(function (p) { return p.hit; }).slice(0, 6).map(function (p) {
+    return '<a class="search__item" href="#product-' + p.id + '">' + flacon(p) + '<span><b>' + esc(p.n) + '</b><span>' + esc(p.b) + ' — от ' + rub(p.min) + '</span></span></a>';
+  }).join('');
   document.addEventListener('input', function (e) { if (e.target.matches('.js-q')) suggest(e.target); });
-  document.addEventListener('focusin', function (e) { if (e.target.matches && e.target.matches('.js-q')) suggest(e.target); });
+  document.addEventListener('focusin', function (e) {
+    if (!e.target.matches || !e.target.matches('.js-q')) return;
+    if (e.target.id === 'finder-input' && isPhone.matches) { e.target.blur(); openSearch(); return; }
+    suggest(e.target);
+  });
   document.addEventListener('click', function (e) { if (!e.target.closest('.js-search')) hideSuggest(); });
 
   // На главной поиск стоит на первом экране; в шапке он появляется, когда первый экран прокручен
@@ -689,6 +744,16 @@
     heroWatch.observe(f);
   }
 
+  // На телефоне цена и кнопка покупки закрепляются внизу, пока основная кнопка не на экране
+  var buyWatch = null;
+  function watchBuy() {
+    if (buyWatch) { buyWatch.disconnect(); buyWatch = null; }
+    var b = $('.buy__add'), bar = $('#buybar');
+    if (!b || !bar || !('IntersectionObserver' in window)) return;
+    buyWatch = new IntersectionObserver(function (en) { bar.classList.toggle('is-on', !en[0].isIntersecting); });
+    buyWatch.observe(b);
+  }
+
   /* ---------- Маршруты ---------- */
   var TITLES = { catalog: 'Каталог', brands: 'Бренды', delivery: 'Доставка и оплата', about: 'О магазине', favorites: 'Избранное', checkout: 'Оформление заказа' };
   function go(name) {
@@ -696,7 +761,7 @@
   }
   function route() {
     var h = location.hash.replace(/^#/, ''), view = $('#view'), html, title = '';
-    closeLayers(true); hideSuggest(); current = null;
+    closeSearch(); closeLayers(true); hideSuggest(); current = null;
     if (h.indexOf('product-') === 0 && byId[h.slice(8)]) { var p = byId[h.slice(8)]; html = viewProduct(p); title = p.b + ' ' + p.n; }
     else if (h === 'catalog') html = viewCatalog();
     else if (h === 'brands') html = viewBrands();
@@ -710,8 +775,12 @@
     view.innerHTML = html;
     if (h === 'catalog') updateGrid();
     watchHero(h === '' || h === 'decant');
+    watchBuy();
+    document.body.classList.toggle('is-product', !!current);
     $$('[data-nav]').forEach(function (a) {
-      if (a.getAttribute('data-nav') === h) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+      var k = a.getAttribute('data-nav');
+      var on = k === 'home' ? (h === '' || h === 'decant') : k === 'catalog' ? (h === 'catalog' || !!current) : k === h;
+      if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
     });
     if (h === 'decant') { var d = $('#decant'); if (d) d.scrollIntoView(); }
     else window.scrollTo(0, 0);
@@ -739,6 +808,13 @@
       case 'menu-close': closeLayers(); break;
       case 'filters-open': openLayer($('#filters')); break;
       case 'filters-close': closeLayers(); break;
+      case 'search-open': openSearch(); break;
+      case 'search-close': closeSearch(); break;
+      case 'seg':
+        F.gender = a.getAttribute('data-g') ? [a.getAttribute('data-g')] : []; shown = PAGE;
+        $$('.seg').forEach(function (b) { b.setAttribute('aria-pressed', b === a); });
+        updateGrid();
+        break;
       case 'fav':
         toggle(favs, a.getAttribute('data-id')); store.set('aromo-favs', favs);
         var on = favs.indexOf(a.getAttribute('data-id')) >= 0;
@@ -761,7 +837,7 @@
         break;
       case 'qty':
         qty = Math.max(1, Math.min(20, qty + +a.getAttribute('data-d')));
-        $('#p-qty').textContent = qty; $('#p-price').innerHTML = priceHtml(current);
+        $('#p-qty').textContent = qty; $('#p-price').innerHTML = priceHtml(current); $('#buybar').innerHTML = buybarHtml(current);
         break;
       case 'add': addToCart(current.id, sel.type, sel.ml, qty); break;
       case 'line-qty':
@@ -776,7 +852,10 @@
         break;
       case 'more': shown += PAGE; updateGrid(); break;
       case 'reset': F = freshFilters(); shown = PAGE; route(); break;
-      case 'reset-go': F = freshFilters(); shown = PAGE; break;
+      case 'reset-go':
+        F = freshFilters(); shown = PAGE;
+        if (location.hash === '#catalog' && a.getAttribute('href') === '#catalog') route();
+        break;
       case 'chip':
         var k = a.getAttribute('data-kind'), v = a.getAttribute('data-value');
         if (k === 'q') F.q = ''; else if (k === 'max') F.max = null; else toggle(F[k], v);
@@ -826,7 +905,8 @@
   });
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
-      if ($$('.search__results').some(function (b) { return !b.hidden; })) hideSuggest(); else closeLayers();
+      if (!sheet.hidden) closeSearch();
+      else if ($$('.search__results').some(function (b) { return !b.hidden; })) hideSuggest(); else closeLayers();
     }
   });
 
